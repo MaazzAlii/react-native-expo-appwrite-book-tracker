@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { ID } from 'react-native-appwrite';
+import { ID, Query } from 'react-native-appwrite';
 import { appwriteConfig, databases } from '../lib/appwrite';
 
 const BooksContext = createContext({
@@ -15,6 +15,29 @@ const BooksContext = createContext({
 export function BooksProvider({ children }) {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const fetchBooks = async (userId) => {
+    if (!userId) {
+      setBooks([]);
+      return [];
+    }
+    setIsLoading(true);
+    try {
+      const response = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.collectionId,
+        [Query.equal('userId', userId)]
+      );
+      setBooks(response.documents || []);
+      return response.documents || [];
+    } catch (error) {
+      console.error('Appwrite listDocuments error:', error);
+      setBooks([]);
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const addBook = async (title, author, rating, userId) => {
     setIsLoading(true);
@@ -47,6 +70,7 @@ export function BooksProvider({ children }) {
         setBooks,
         isLoading,
         setIsLoading,
+        fetchBooks,
         addBook,
       }}
     >
