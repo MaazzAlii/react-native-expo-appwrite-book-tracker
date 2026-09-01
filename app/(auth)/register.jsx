@@ -1,12 +1,22 @@
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Spacer } from '../../components/Spacer';
 import { ThemedButton } from '../../components/ThemedButton';
 import { ThemedText } from '../../components/ThemedText';
+import { ThemedTextInput } from '../../components/ThemedTextInput';
 import { ThemedView } from '../../components/ThemedView';
 
 export default function Register() {
   const router = useRouter();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleRegister = () => {
+    console.log('Registering user:', { name, email, password });
+    router.push('/profile');
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -14,8 +24,32 @@ export default function Register() {
         <ThemedText variant="title">Create Account</ThemedText>
         <Spacer size={8} />
         <ThemedText variant="subtitle">Join Book Tracker today</ThemedText>
-        <Spacer size={24} />
-        <ThemedButton title="Register" onPress={() => router.push('/profile')} />
+        <Spacer size={20} />
+
+        <ThemedTextInput
+          placeholder="Full Name"
+          value={name}
+          onChangeText={setName}
+          autoCapitalize="words"
+        />
+        <Spacer size={12} />
+        <ThemedTextInput
+          placeholder="Email Address"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <Spacer size={12} />
+        <ThemedTextInput
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        <Spacer size={20} />
+
+        <ThemedButton title="Register" onPress={handleRegister} />
         <Spacer size={12} />
         <ThemedButton
           title="Already have an account? Sign In"
