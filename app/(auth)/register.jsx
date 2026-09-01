@@ -1,26 +1,36 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, useColorScheme } from 'react-native';
 import { Spacer } from '../../components/Spacer';
 import { ThemedButton } from '../../components/ThemedButton';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedTextInput } from '../../components/ThemedTextInput';
 import { ThemedView } from '../../components/ThemedView';
+import { Colors } from '../../constants/Colors';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
   const router = useRouter();
   const { register, isLoading } = useAuth();
+  const colorScheme = useColorScheme() ?? 'light';
+  const theme = Colors[colorScheme];
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleRegister = async () => {
+    if (!name || !email || !password) {
+      setError('Please fill in all required fields.');
+      return;
+    }
+    setError('');
     try {
       await register(email, password, name);
       router.push('/profile');
-    } catch (error) {
-      console.log('Registration failed:', error.message);
+    } catch (err) {
+      setError(err.message || 'Registration failed. Please try again.');
     }
   };
 
@@ -32,17 +42,32 @@ export default function Register() {
         <ThemedText variant="subtitle">Join Book Tracker today</ThemedText>
         <Spacer size={20} />
 
+        {!!error && (
+          <>
+            <ThemedText style={[styles.errorText, { color: theme.warning }]}>
+              {error}
+            </ThemedText>
+            <Spacer size={12} />
+          </>
+        )}
+
         <ThemedTextInput
           placeholder="Full Name"
           value={name}
-          onChangeText={setName}
+          onChangeText={(val) => {
+            setName(val);
+            if (error) setError('');
+          }}
           autoCapitalize="words"
         />
         <Spacer size={12} />
         <ThemedTextInput
           placeholder="Email Address"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(val) => {
+            setEmail(val);
+            if (error) setError('');
+          }}
           keyboardType="email-address"
           autoCapitalize="none"
         />
@@ -50,7 +75,10 @@ export default function Register() {
         <ThemedTextInput
           placeholder="Password"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(val) => {
+            setPassword(val);
+            if (error) setError('');
+          }}
           secureTextEntry
         />
         <Spacer size={20} />
@@ -85,5 +113,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 12,
     elevation: 4,
+  },
+  errorText: {
+    fontSize: 14,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 });

@@ -1,25 +1,35 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, useColorScheme } from 'react-native';
 import { Spacer } from '../../components/Spacer';
 import { ThemedButton } from '../../components/ThemedButton';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedTextInput } from '../../components/ThemedTextInput';
 import { ThemedView } from '../../components/ThemedView';
+import { Colors } from '../../constants/Colors';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
   const router = useRouter();
   const { login, isLoading } = useAuth();
+  const colorScheme = useColorScheme() ?? 'light';
+  const theme = Colors[colorScheme];
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    setError('');
     try {
       await login(email, password);
       router.push('/profile');
-    } catch (error) {
-      console.log('Login failed:', error.message);
+    } catch (err) {
+      setError(err.message || 'Failed to sign in. Please check your credentials.');
     }
   };
 
@@ -31,10 +41,22 @@ export default function Login() {
         <ThemedText variant="subtitle">Welcome back to Book Tracker</ThemedText>
         <Spacer size={20} />
 
+        {!!error && (
+          <>
+            <ThemedText style={[styles.errorText, { color: theme.warning }]}>
+              {error}
+            </ThemedText>
+            <Spacer size={12} />
+          </>
+        )}
+
         <ThemedTextInput
           placeholder="Email Address"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(val) => {
+            setEmail(val);
+            if (error) setError('');
+          }}
           keyboardType="email-address"
           autoCapitalize="none"
         />
@@ -42,7 +64,10 @@ export default function Login() {
         <ThemedTextInput
           placeholder="Password"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(val) => {
+            setPassword(val);
+            if (error) setError('');
+          }}
           secureTextEntry
         />
         <Spacer size={20} />
@@ -77,5 +102,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 12,
     elevation: 4,
+  },
+  errorText: {
+    fontSize: 14,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 });
