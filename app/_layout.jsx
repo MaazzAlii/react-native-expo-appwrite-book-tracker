@@ -1,8 +1,9 @@
 import { Stack } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { Colors } from '../constants/Colors';
+import { AuthProvider } from '../context/AuthContext';
 
-export default function RootLayout() {
+function RootNavigation() {
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
 
@@ -23,5 +24,13 @@ export default function RootLayout() {
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
     </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <RootNavigation />
+    </AuthProvider>
   );
 }
