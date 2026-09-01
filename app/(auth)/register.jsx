@@ -1,20 +1,27 @@
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { Spacer } from '../../components/Spacer';
+import { ThemedButton } from '../../components/ThemedButton';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
 
 export default function Register() {
+  const router = useRouter();
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView variant="card" style={styles.card}>
         <ThemedText variant="title">Create Account</ThemedText>
         <Spacer size={8} />
         <ThemedText variant="subtitle">Join Book Tracker today</ThemedText>
-        <Spacer size={20} />
-        <Link href="/login" style={styles.link}>
-          <ThemedText style={styles.linkText}>Already have an account? Sign In</ThemedText>
-        </Link>
+        <Spacer size={24} />
+        <ThemedButton title="Register" onPress={() => router.push('/profile')} />
+        <Spacer size={12} />
+        <ThemedButton
+          title="Already have an account? Sign In"
+          variant="secondary"
+          onPress={() => router.push('/login')}
+        />
       </ThemedView>
     </ThemedView>
   );
@@ -38,16 +45,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 12,
     elevation: 4,
-  },
-  link: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-  },
-  linkText: {
-    color: '#ffffff',
-    fontWeight: '600',
-    fontSize: 14,
   },
 });
