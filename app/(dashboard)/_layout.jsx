@@ -63,6 +63,15 @@ function DashboardTabs() {
         }}
       />
       <Tabs.Screen
+        name="goal"
+        options={{
+          title: 'Goal',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'trophy' : 'trophy-outline'} size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
