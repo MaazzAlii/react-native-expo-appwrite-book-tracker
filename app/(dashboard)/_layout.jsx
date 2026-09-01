@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { Colors } from '../../constants/Colors';
@@ -24,9 +25,33 @@ export default function DashboardLayout() {
         },
       }}
     >
-      <Tabs.Screen name="books/index" options={{ title: 'My Books' }} />
-      <Tabs.Screen name="create" options={{ title: 'Add Book' }} />
-      <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
+      <Tabs.Screen
+        name="books/index"
+        options={{
+          title: 'My Books',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'book' : 'book-outline'} size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: 'Add Book',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'person' : 'person-outline'} size={24} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
