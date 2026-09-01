@@ -2,12 +2,13 @@ import { Link } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { Spacer } from '../components/Spacer';
 import { ThemedLogo } from '../components/ThemedLogo';
+import { ThemedSafeAreaView } from '../components/ThemedSafeAreaView';
 import { ThemedText } from '../components/ThemedText';
 import { ThemedView } from '../components/ThemedView';
 
 export default function Home() {
   return (
-    <ThemedView style={styles.container}>
+    <ThemedSafeAreaView style={styles.container}>
       <ThemedView variant="card" style={styles.card}>
         <ThemedLogo size={72} />
         <ThemedText variant="title">Book Tracker</ThemedText>
@@ -22,7 +23,7 @@ export default function Home() {
           <ThemedText style={styles.linkText}>About This App</ThemedText>
         </Link>
       </ThemedView>
-    </ThemedView>
+    </ThemedSafeAreaView>
   );
 }
 
