@@ -1,11 +1,28 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { Colors } from '../constants/Colors';
-import { AuthProvider } from '../context/AuthContext';
+import { AuthProvider, useAuth } from '../context/AuthContext';
 
 function RootNavigation() {
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
+  const { user, isLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+    const inDashboardGroup = segments[0] === '(dashboard)';
+
+    if (!user && inDashboardGroup) {
+      router.replace('/login');
+    } else if (user && inAuthGroup) {
+      router.replace('/books');
+    }
+  }, [user, segments, isLoading, router]);
 
   return (
     <Stack
