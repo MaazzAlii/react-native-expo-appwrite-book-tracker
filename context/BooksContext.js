@@ -103,6 +103,23 @@ export function BooksProvider({ children }) {
     }
   };
 
+  const deleteBook = async (id) => {
+    setIsLoading(true);
+    try {
+      await databases.deleteDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.collectionId,
+        id
+      );
+      setBooks((prev) => prev.filter((b) => b.$id !== id));
+    } catch (error) {
+      console.error('Appwrite deleteDocument error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <BooksContext.Provider
       value={{
@@ -113,6 +130,7 @@ export function BooksProvider({ children }) {
         fetchBooks,
         getBook,
         addBook,
+        deleteBook,
       }}
     >
       {children}

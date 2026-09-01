@@ -12,12 +12,13 @@ import { useBooks } from '../../../context/BooksContext';
 export default function BookDetails() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { getBook, books } = useBooks();
+  const { getBook, deleteBook, books } = useBooks();
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
 
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -43,6 +44,17 @@ export default function BookDetails() {
       loadBook();
     }
   }, [id, getBook, books]);
+
+  const handleDelete = async () => {
+    try {
+      setDeleting(true);
+      await deleteBook(id);
+      router.replace('/books');
+    } catch (_err) {
+      setError('Failed to delete book.');
+      setDeleting(false);
+    }
+  };
 
   if (loading) {
     return <LoadingSpinner />;
@@ -74,6 +86,13 @@ export default function BookDetails() {
               Rating: {stars} ({book.rating}/5)
             </ThemedText>
             <Spacer size={20} />
+
+            <ThemedButton
+              title={deleting ? 'Deleting...' : 'Delete Book'}
+              onPress={handleDelete}
+              style={{ backgroundColor: theme.warning }}
+            />
+            <Spacer size={12} />
           </>
         ) : null}
 
