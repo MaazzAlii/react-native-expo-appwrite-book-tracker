@@ -1,32 +1,35 @@
 import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Spacer } from '../components/Spacer';
+import { ThemedText } from '../components/ThemedText';
+import { ThemedView } from '../components/ThemedView';
 
 export default function About() {
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>About Book Tracker</Text>
-        <Text style={styles.description}>
+    <ThemedView style={styles.container}>
+      <ThemedView variant="card" style={styles.card}>
+        <ThemedText variant="title">About Book Tracker</ThemedText>
+        <Spacer size={12} />
+        <ThemedText variant="body" style={styles.description}>
           Book Tracker helps you organize your reading lists, track book progress, and set annual reading goals with real-time sync across devices.
-        </Text>
+        </ThemedText>
+        <Spacer size={20} />
         <Link href="/" style={styles.link}>
-          <Text style={styles.linkText}>Back to Home</Text>
+          <ThemedText style={styles.linkText}>Back to Home</ThemedText>
         </Link>
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
   card: {
-    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 24,
     width: '100%',
@@ -38,22 +41,11 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 4,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
   description: {
-    fontSize: 14,
-    lineHeight: 22,
-    color: '#4a5568',
     textAlign: 'center',
-    marginBottom: 20,
+    lineHeight: 22,
   },
   link: {
-    marginTop: 8,
     paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: '#2563eb',

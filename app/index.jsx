@@ -1,38 +1,39 @@
 import { Link } from 'expo-router';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Spacer } from '../components/Spacer';
+import { ThemedLogo } from '../components/ThemedLogo';
+import { ThemedText } from '../components/ThemedText';
+import { ThemedView } from '../components/ThemedView';
 
 export default function Home() {
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <Image
-          source={require('../assets/img/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.title}>Book Tracker</Text>
-        <Text style={styles.subtitle}>Track your personal library & reading goals</Text>
-        <Text style={styles.description}>
+    <ThemedView style={styles.container}>
+      <ThemedView variant="card" style={styles.card}>
+        <ThemedLogo size={72} />
+        <ThemedText variant="title">Book Tracker</ThemedText>
+        <Spacer size={8} />
+        <ThemedText variant="subtitle">Track your personal library & reading goals</ThemedText>
+        <Spacer size={16} />
+        <ThemedText variant="body" style={styles.description}>
           Built with React Native, Expo Router, and Appwrite BaaS for cloud synchronization and realtime updates.
-        </Text>
+        </ThemedText>
+        <Spacer size={20} />
         <Link href="/about" style={styles.link}>
-          <Text style={styles.linkText}>About This App</Text>
+          <ThemedText style={styles.linkText}>About This App</ThemedText>
         </Link>
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
   card: {
-    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 24,
     width: '100%',
@@ -44,34 +45,10 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 4,
   },
-  logo: {
-    width: 72,
-    height: 72,
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#4a5568',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
   description: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#718096',
     textAlign: 'center',
-    marginBottom: 20,
   },
   link: {
-    marginTop: 8,
     paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: '#2563eb',
