@@ -8,6 +8,7 @@ const BooksContext = createContext({
   isLoading: false,
   setIsLoading: () => {},
   fetchBooks: async () => {},
+  getBook: async () => {},
   addBook: async () => {},
   deleteBook: async () => {},
 });
@@ -61,6 +62,20 @@ export function BooksProvider({ children }) {
     }
   };
 
+  const getBook = async (id) => {
+    try {
+      const doc = await databases.getDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.collectionId,
+        id
+      );
+      return doc;
+    } catch (error) {
+      console.error('Appwrite getDocument error:', error);
+      throw error;
+    }
+  };
+
   const addBook = async (title, author, rating, userId) => {
     setIsLoading(true);
     try {
@@ -96,6 +111,7 @@ export function BooksProvider({ children }) {
         isLoading,
         setIsLoading,
         fetchBooks,
+        getBook,
         addBook,
       }}
     >
