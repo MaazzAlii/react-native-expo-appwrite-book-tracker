@@ -44,6 +44,19 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const logout = async () => {
+    setIsLoading(true);
+    try {
+      await account.deleteSession('current');
+      setUser(null);
+    } catch (error) {
+      console.error('Appwrite logout error:', error);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -53,6 +66,7 @@ export function AuthProvider({ children }) {
         setIsLoading,
         login,
         register,
+        logout,
       }}
     >
       {children}

@@ -4,17 +4,37 @@ import { Spacer } from '../../components/Spacer';
 import { ThemedButton } from '../../components/ThemedButton';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Profile() {
   const router = useRouter();
+  const { user, logout, isLoading } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/login');
+  };
 
   return (
     <ThemedView style={styles.container}>
       <ThemedView variant="card" style={styles.card}>
         <ThemedText variant="title">User Profile</ThemedText>
         <Spacer size={8} />
-        <ThemedText variant="subtitle">Manage your account and reading settings</ThemedText>
+        <ThemedText variant="subtitle">
+          {user ? `Logged in as ${user.name || user.email}` : 'Guest User'}
+        </ThemedText>
+        {user?.email && (
+          <>
+            <Spacer size={4} />
+            <ThemedText variant="caption">{user.email}</ThemedText>
+          </>
+        )}
         <Spacer size={24} />
+        <ThemedButton
+          title={isLoading ? 'Signing Out...' : 'Sign Out'}
+          onPress={handleLogout}
+        />
+        <Spacer size={12} />
         <ThemedButton
           title="Back to Home"
           variant="secondary"
