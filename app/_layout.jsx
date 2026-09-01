@@ -1,6 +1,7 @@
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Colors } from '../constants/Colors';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 
@@ -23,6 +24,10 @@ function RootNavigation() {
       router.replace('/books');
     }
   }, [user, segments, isLoading, router]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Stack
