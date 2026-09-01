@@ -1,22 +1,16 @@
 import { Link } from 'expo-router';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-export default function Home() {
+export default function About() {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Image
-          source={require('../assets/img/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.title}>Book Tracker</Text>
-        <Text style={styles.subtitle}>Track your personal library & reading goals</Text>
+        <Text style={styles.title}>About Book Tracker</Text>
         <Text style={styles.description}>
-          Built with React Native, Expo Router, and Appwrite BaaS for cloud synchronization and realtime updates.
+          Book Tracker helps you organize your reading lists, track book progress, and set annual reading goals with real-time sync across devices.
         </Text>
-        <Link href="/about" style={styles.link}>
-          <Text style={styles.linkText}>About This App</Text>
+        <Link href="/" style={styles.link}>
+          <Text style={styles.linkText}>Back to Home</Text>
         </Link>
       </View>
     </View>
@@ -44,29 +38,17 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 4,
   },
-  logo: {
-    width: 72,
-    height: 72,
-    marginBottom: 16,
-  },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: '700',
     color: '#1a1a1a',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#4a5568',
-    marginBottom: 16,
+    marginBottom: 12,
     textAlign: 'center',
   },
   description: {
     fontSize: 14,
-    lineHeight: 20,
-    color: '#718096',
+    lineHeight: 22,
+    color: '#4a5568',
     textAlign: 'center',
     marginBottom: 20,
   },
