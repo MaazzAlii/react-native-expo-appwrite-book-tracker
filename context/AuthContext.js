@@ -1,20 +1,38 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { ID } from 'react-native-appwrite';
 import { account } from '../lib/appwrite';
 
 const AuthContext = createContext({
   user: null,
   setUser: () => {},
-  isLoading: false,
+  isLoading: true,
   setIsLoading: () => {},
   login: async () => {},
   register: async () => {},
   logout: async () => {},
+  checkUser: async () => {},
 });
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const checkUser = async () => {
+    try {
+      const currentUser = await account.get();
+      setUser(currentUser);
+      return currentUser;
+    } catch (error) {
+      setUser(null);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const login = async (email, password) => {
     setIsLoading(true);
@@ -67,6 +85,7 @@ export function AuthProvider({ children }) {
         login,
         register,
         logout,
+        checkUser,
       }}
     >
       {children}
