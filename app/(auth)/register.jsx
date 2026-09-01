@@ -6,16 +6,22 @@ import { ThemedButton } from '../../components/ThemedButton';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedTextInput } from '../../components/ThemedTextInput';
 import { ThemedView } from '../../components/ThemedView';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
   const router = useRouter();
+  const { register, isLoading } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleRegister = () => {
-    console.log('Registering user:', { name, email, password });
-    router.push('/profile');
+  const handleRegister = async () => {
+    try {
+      await register(email, password, name);
+      router.push('/profile');
+    } catch (error) {
+      console.log('Registration failed:', error.message);
+    }
   };
 
   return (
@@ -49,7 +55,7 @@ export default function Register() {
         />
         <Spacer size={20} />
 
-        <ThemedButton title="Register" onPress={handleRegister} />
+        <ThemedButton title={isLoading ? 'Creating Account...' : 'Register'} onPress={handleRegister} />
         <Spacer size={12} />
         <ThemedButton
           title="Already have an account? Sign In"

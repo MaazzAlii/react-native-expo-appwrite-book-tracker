@@ -6,15 +6,21 @@ import { ThemedButton } from '../../components/ThemedButton';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedTextInput } from '../../components/ThemedTextInput';
 import { ThemedView } from '../../components/ThemedView';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
   const router = useRouter();
+  const { login, isLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    console.log('Logging in with:', { email, password });
-    router.push('/profile');
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
+      router.push('/profile');
+    } catch (error) {
+      console.log('Login failed:', error.message);
+    }
   };
 
   return (
@@ -41,7 +47,7 @@ export default function Login() {
         />
         <Spacer size={20} />
 
-        <ThemedButton title="Sign In" onPress={handleLogin} />
+        <ThemedButton title={isLoading ? 'Signing In...' : 'Sign In'} onPress={handleLogin} />
         <Spacer size={12} />
         <ThemedButton
           title="Create an Account"
