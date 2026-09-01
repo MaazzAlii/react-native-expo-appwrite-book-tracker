@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { ID, Query } from 'react-native-appwrite';
-import { appwriteConfig, databases } from '../lib/appwrite';
+import { appwriteConfig, client, databases } from '../lib/appwrite';
 
 const BooksContext = createContext({
   books: [],
@@ -15,6 +15,28 @@ const BooksContext = createContext({
 export function BooksProvider({ children }) {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const channel = `databases.${appwriteConfig.databaseId}.collections.${appwriteConfig.collectionId}.documents`;
+    const unsubscribe = client.subscribe(channel, (response) => {
+      const { events, payload } = response;
+
+      if (events.some((e) => e.endsWith('.create'))) {
+        setBooks((prev) => {
+          if (prev.some((b) => b.$id === payload.$id)) return prev;
+          return [payload, ...prev];
+        });
+      }
+
+      if (events.some((e) => e.endsWith('.delete'))) {
+        setBooks((prev) => prev.filter((b) => b.$id !== payload.$id));
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const fetchBooks = async (userId) => {
     if (!userId) {
@@ -53,7 +75,10 @@ export function BooksProvider({ children }) {
           userId,
         }
       );
-      setBooks((prev) => [response, ...prev]);
+      setBooks((prev) => {
+        if (prev.some((b) => b.$id === response.$id)) return prev;
+        return [response, ...prev];
+      });
       return response;
     } catch (error) {
       console.error('Appwrite createDocument error:', error);
