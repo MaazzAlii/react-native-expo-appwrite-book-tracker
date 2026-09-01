@@ -8,26 +8,42 @@ node_modules/
 .expo/
 dist/
 web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+/ios
+/android
+
+# Metro
+.metro-health-check*
 
 # Environment files
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
 
 # Agent internal task state & handoff
 .agent/
 .agent-state.md
 
 # Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+npm-debug.*
+yarn-debug.*
+yarn-error.*
 *.log
 
-# OS / Editor files
+# macOS / OS / Editor files
 .DS_Store
 Thumbs.db
+*.pem
 .vscode/
 .idea/
+
+# typescript
+*.tsbuildinfo
