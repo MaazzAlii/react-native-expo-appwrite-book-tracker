@@ -16,9 +16,9 @@ function RootNavigation() {
     if (isLoading) return;
 
     const inAuthGroup = segments[0] === '(auth)';
-    const inDashboardGroup = segments[0] === '(dashboard)';
+    const inProtectedGroup = segments[0] === '(dashboard)' || segments[0] === '(practice)';
 
-    if (!user && inDashboardGroup) {
+    if (!user && inProtectedGroup) {
       router.replace('/login');
     } else if (user && inAuthGroup) {
       router.replace('/books');
@@ -45,6 +45,7 @@ function RootNavigation() {
       <Stack.Screen name="about" options={{ title: 'About' }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+      <Stack.Screen name="(practice)" options={{ headerShown: false }} />
     </Stack>
   );
 }

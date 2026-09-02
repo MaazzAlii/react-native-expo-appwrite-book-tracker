@@ -36,6 +36,11 @@ export default function Profile() {
         />
         <Spacer size={12} />
         <ThemedButton
+          title="Practice Screens Hub"
+          onPress={() => router.push('/(practice)')}
+        />
+        <Spacer size={12} />
+        <ThemedButton
           title="Back to Home"
           variant="secondary"
           onPress={() => router.push('/')}
