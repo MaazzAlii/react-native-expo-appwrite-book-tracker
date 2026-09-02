@@ -1,16 +1,22 @@
-import { Link } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
 import { Spacer } from '../components/Spacer';
+import { ThemedButton } from '../components/ThemedButton';
 import { ThemedLogo } from '../components/ThemedLogo';
 import { ThemedSafeAreaView } from '../components/ThemedSafeAreaView';
 import { ThemedText } from '../components/ThemedText';
 import { ThemedView } from '../components/ThemedView';
+import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
+  const router = useRouter();
+  const { user } = useAuth();
+
   return (
     <ThemedSafeAreaView style={styles.container}>
       <ThemedView variant="card" style={styles.card}>
         <ThemedLogo size={72} />
+        <Spacer size={12} />
         <ThemedText variant="title">Book Tracker</ThemedText>
         <Spacer size={8} />
         <ThemedText variant="subtitle">Track your personal library & reading goals</ThemedText>
@@ -18,10 +24,20 @@ export default function Home() {
         <ThemedText variant="body" style={styles.description}>
           Built with React Native, Expo Router, and Appwrite BaaS for cloud synchronization and realtime updates.
         </ThemedText>
-        <Spacer size={20} />
-        <Link href="/about" style={styles.link}>
-          <ThemedText style={styles.linkText}>About This App</ThemedText>
-        </Link>
+        <Spacer size={24} />
+
+        <View style={styles.buttonContainer}>
+          <ThemedButton
+            title={user ? 'Go to My Library' : 'Sign In / Register'}
+            onPress={() => router.push(user ? '/books' : '/login')}
+          />
+          <Spacer size={12} />
+          <ThemedButton
+            title="About This App"
+            variant="secondary"
+            onPress={() => router.push('/about')}
+          />
+        </View>
       </ThemedView>
     </ThemedSafeAreaView>
   );
@@ -48,16 +64,9 @@ const styles = StyleSheet.create({
   },
   description: {
     textAlign: 'center',
+    lineHeight: 22,
   },
-  link: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-  },
-  linkText: {
-    color: '#ffffff',
-    fontWeight: '600',
-    fontSize: 14,
+  buttonContainer: {
+    width: '100%',
   },
 });
