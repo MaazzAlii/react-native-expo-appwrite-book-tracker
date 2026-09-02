@@ -135,6 +135,7 @@ react-native-expo-appwrite-book-tracker/
    EXPO_PUBLIC_APPWRITE_PROJECT_ID=your_appwrite_project_id
    EXPO_PUBLIC_APPWRITE_DATABASE_ID=book_tracker_db
    EXPO_PUBLIC_APPWRITE_COLLECTION_ID=books
+   EXPO_PUBLIC_APPWRITE_PLATFORM=com.anonymous.reactnativeexpobooktracker
    ```
 
 4. **Start Development Server**:

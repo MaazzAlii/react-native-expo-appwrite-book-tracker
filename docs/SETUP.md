@@ -62,6 +62,7 @@ EXPO_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
 EXPO_PUBLIC_APPWRITE_PROJECT_ID=6701a2b3001122334455
 EXPO_PUBLIC_APPWRITE_DATABASE_ID=book_tracker_db
 EXPO_PUBLIC_APPWRITE_COLLECTION_ID=books
+EXPO_PUBLIC_APPWRITE_PLATFORM=com.anonymous.reactnativeexpobooktracker
 ```
 
 > ⚠️ **Note**: Environment variable names MUST match `EXPO_PUBLIC_APPWRITE_*` exactly as read by `lib/appwrite.js`.
