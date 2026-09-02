@@ -1,6 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { ID, Query } from 'react-native-appwrite';
-import { appwriteConfig, client, databases } from '../lib/appwrite';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createContext, useContext, useState } from 'react';
 
 const BooksContext = createContext({
   books: [],
@@ -17,60 +16,29 @@ export function BooksProvider({ children }) {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // Skip WebSocket subscription if project ID is unconfigured or placeholder
-    if (!appwriteConfig.projectId || appwriteConfig.projectId === '6701a2b3001122334455') {
-      return;
-    }
+  const STORAGE_KEY = 'book_tracker_books';
 
-    let unsubscribe = () => {};
+  const loadBooks = async () => {
     try {
-      const channel = `databases.${appwriteConfig.databaseId}.collections.${appwriteConfig.collectionId}.documents`;
-      unsubscribe = client.subscribe(channel, (response) => {
-        const { events, payload } = response;
-
-        if (events.some((e) => e.endsWith('.create'))) {
-          setBooks((prev) => {
-            if (prev.some((b) => b.$id === payload.$id)) return prev;
-            return [payload, ...prev];
-          });
-        }
-
-        if (events.some((e) => e.endsWith('.delete'))) {
-          setBooks((prev) => prev.filter((b) => b.$id !== payload.$id));
-        }
-      });
-    } catch (err) {
-      console.warn('Realtime subscription skipped:', err?.message);
-    }
-
-    return () => {
-      if (typeof unsubscribe === 'function') {
-        try {
-          unsubscribe();
-        } catch {
-          // silent cleanup
-        }
-      }
-    };
-  }, []);
-
-  const fetchBooks = async (userId) => {
-    if (!userId) {
-      setBooks([]);
+      const json = await AsyncStorage.getItem(STORAGE_KEY);
+      return json ? JSON.parse(json) : [];
+    } catch {
       return [];
     }
+  };
+
+  const saveBooks = async (newBooks) => {
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newBooks));
+  };
+
+  const fetchBooks = async (userId) => {
     setIsLoading(true);
     try {
-      const response = await databases.listDocuments(
-        appwriteConfig.databaseId,
-        appwriteConfig.collectionId,
-        [Query.equal('userId', userId)]
-      );
-      setBooks(response.documents || []);
-      return response.documents || [];
-    } catch (error) {
-      console.error('Appwrite listDocuments error:', error);
+      const allBooks = await loadBooks();
+      const userBooks = userId ? allBooks.filter((b) => b.userId === userId) : allBooks;
+      setBooks(userBooks);
+      return userBooks;
+    } catch {
       setBooks([]);
       return [];
     } finally {
@@ -79,40 +47,29 @@ export function BooksProvider({ children }) {
   };
 
   const getBook = async (id) => {
-    try {
-      const doc = await databases.getDocument(
-        appwriteConfig.databaseId,
-        appwriteConfig.collectionId,
-        id
-      );
-      return doc;
-    } catch (error) {
-      console.error('Appwrite getDocument error:', error);
-      throw error;
-    }
+    const allBooks = await loadBooks();
+    return allBooks.find((b) => b.$id === id);
   };
 
   const addBook = async (title, author, rating, userId) => {
     setIsLoading(true);
     try {
-      const response = await databases.createDocument(
-        appwriteConfig.databaseId,
-        appwriteConfig.collectionId,
-        ID.unique(),
-        {
-          title,
-          author,
-          rating: Number(rating),
-          userId,
-        }
-      );
-      setBooks((prev) => {
-        if (prev.some((b) => b.$id === response.$id)) return prev;
-        return [response, ...prev];
-      });
-      return response;
+      const allBooks = await loadBooks();
+      const newBook = {
+        $id: Date.now().toString(),
+        title,
+        author,
+        rating: Number(rating),
+        userId: userId || 'guest',
+        createdAt: new Date().toISOString(),
+      };
+      const updated = [newBook, ...allBooks];
+      await saveBooks(updated);
+      const userBooks = userId ? updated.filter((b) => b.userId === userId) : updated;
+      setBooks(userBooks);
+      return newBook;
     } catch (error) {
-      console.error('Appwrite createDocument error:', error);
+      console.error('Add book error:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -122,14 +79,12 @@ export function BooksProvider({ children }) {
   const deleteBook = async (id) => {
     setIsLoading(true);
     try {
-      await databases.deleteDocument(
-        appwriteConfig.databaseId,
-        appwriteConfig.collectionId,
-        id
-      );
+      const allBooks = await loadBooks();
+      const updated = allBooks.filter((b) => b.$id !== id);
+      await saveBooks(updated);
       setBooks((prev) => prev.filter((b) => b.$id !== id));
     } catch (error) {
-      console.error('Appwrite deleteDocument error:', error);
+      console.error('Delete book error:', error);
       throw error;
     } finally {
       setIsLoading(false);
