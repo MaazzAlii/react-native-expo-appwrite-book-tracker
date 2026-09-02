@@ -18,24 +18,40 @@ export function BooksProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const channel = `databases.${appwriteConfig.databaseId}.collections.${appwriteConfig.collectionId}.documents`;
-    const unsubscribe = client.subscribe(channel, (response) => {
-      const { events, payload } = response;
+    // Skip WebSocket subscription if project ID is unconfigured or placeholder
+    if (!appwriteConfig.projectId || appwriteConfig.projectId === '6701a2b3001122334455') {
+      return;
+    }
 
-      if (events.some((e) => e.endsWith('.create'))) {
-        setBooks((prev) => {
-          if (prev.some((b) => b.$id === payload.$id)) return prev;
-          return [payload, ...prev];
-        });
-      }
+    let unsubscribe = () => {};
+    try {
+      const channel = `databases.${appwriteConfig.databaseId}.collections.${appwriteConfig.collectionId}.documents`;
+      unsubscribe = client.subscribe(channel, (response) => {
+        const { events, payload } = response;
 
-      if (events.some((e) => e.endsWith('.delete'))) {
-        setBooks((prev) => prev.filter((b) => b.$id !== payload.$id));
-      }
-    });
+        if (events.some((e) => e.endsWith('.create'))) {
+          setBooks((prev) => {
+            if (prev.some((b) => b.$id === payload.$id)) return prev;
+            return [payload, ...prev];
+          });
+        }
+
+        if (events.some((e) => e.endsWith('.delete'))) {
+          setBooks((prev) => prev.filter((b) => b.$id !== payload.$id));
+        }
+      });
+    } catch (err) {
+      console.warn('Realtime subscription skipped:', err?.message);
+    }
 
     return () => {
-      unsubscribe();
+      if (typeof unsubscribe === 'function') {
+        try {
+          unsubscribe();
+        } catch {
+          // silent cleanup
+        }
+      }
     };
   }, []);
 
