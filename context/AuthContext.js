@@ -34,18 +34,6 @@ export function AuthProvider({ children }) {
     checkUser();
   }, []);
 
-  const formatAuthError = (error) => {
-    if (
-      error?.message?.includes('Project with the requested ID could not be found') ||
-      error?.type === 'project_not_found'
-    ) {
-      return new Error(
-        'Invalid Appwrite Project ID. Please set your real EXPO_PUBLIC_APPWRITE_PROJECT_ID in .env and restart Expo with "npx expo start --clear".'
-      );
-    }
-    return error;
-  };
-
   const login = async (email, password) => {
     setIsLoading(true);
     try {
@@ -54,9 +42,8 @@ export function AuthProvider({ children }) {
       setUser(currentUser);
       return currentUser;
     } catch (error) {
-      const formatted = formatAuthError(error);
-      console.error('Appwrite login error:', formatted);
-      throw formatted;
+      console.error('Appwrite login error:', error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -68,9 +55,8 @@ export function AuthProvider({ children }) {
       await account.create(ID.unique(), email, password, name);
       return await login(email, password);
     } catch (error) {
-      const formatted = formatAuthError(error);
-      console.error('Appwrite register error:', formatted);
-      throw formatted;
+      console.error('Appwrite register error:', error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
