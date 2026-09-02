@@ -1,9 +1,8 @@
 import { Stack } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { Colors } from '../../constants/Colors';
-import { BooksProvider } from '../../context/BooksContext';
 
-function PracticeStack() {
+export default function PracticeLayout() {
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
 
@@ -24,13 +23,5 @@ function PracticeStack() {
       <Stack.Screen name="stats" options={{ title: 'Reading Stats' }} />
       <Stack.Screen name="goal" options={{ title: 'Annual Goal' }} />
     </Stack>
-  );
-}
-
-export default function PracticeLayout() {
-  return (
-    <BooksProvider>
-      <PracticeStack />
-    </BooksProvider>
   );
 }

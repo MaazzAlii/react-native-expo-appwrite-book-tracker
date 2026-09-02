@@ -4,6 +4,7 @@ import { useColorScheme } from 'react-native';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Colors } from '../constants/Colors';
 import { AuthProvider, useAuth } from '../context/AuthContext';
+import { BooksProvider } from '../context/BooksContext';
 
 function RootNavigation() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -53,7 +54,9 @@ function RootNavigation() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootNavigation />
+      <BooksProvider>
+        <RootNavigation />
+      </BooksProvider>
     </AuthProvider>
   );
 }

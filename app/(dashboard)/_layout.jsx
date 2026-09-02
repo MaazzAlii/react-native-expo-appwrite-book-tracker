@@ -2,9 +2,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { Colors } from '../../constants/Colors';
-import { BooksProvider } from '../../context/BooksContext';
 
-function DashboardTabs() {
+export default function DashboardLayout() {
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
 
@@ -54,13 +53,5 @@ function DashboardTabs() {
         }}
       />
     </Tabs>
-  );
-}
-
-export default function DashboardLayout() {
-  return (
-    <BooksProvider>
-      <DashboardTabs />
-    </BooksProvider>
   );
 }
