@@ -51,26 +51,60 @@ react-native-expo-appwrite-book-tracker/
 │   │   ├── _layout.jsx         # Auth Stack Layout
 │   │   ├── login.jsx           # User Login Screen
 │   │   └── register.jsx        # User Registration Screen
-│   └── (dashboard)/            # Route Group: Protected Dashboard
-│       ├── _layout.jsx         # Bottom Tabs Navigation & BooksProvider
-│       ├── books/
-│       │   ├── index.jsx       # Virtualized FlatList My Books Screen
-│       │   └── [id].jsx        # Dynamic Route Book Details & Delete Screen
-│       ├── create.jsx          # Add New Book Form Screen
+│   ├── (dashboard)/            # Route Group: Protected Dashboard (3 Tabs)
+│   │   ├── _layout.jsx         # Bottom Tabs Navigation & BooksProvider
+│   │   ├── books/
+│   │   │   ├── index.jsx       # Virtualized FlatList My Books Screen
+│   │   │   └── [id].jsx        # Dynamic Route Book Details & Delete Screen
+│   │   ├── create.jsx          # Add New Book Form Screen
+│   │   └── profile.jsx         # User Profile, Sign Out & Hub Navigation
+│   └── (practice)/             # Route Group: Standalone Practice Screens
+│       ├── _layout.jsx         # Practice Stack Layout & BooksProvider
+│       ├── index.jsx           # Practice Screens Hub
 │       ├── search.jsx          # Search & Star Filter Practice Screen
 │       ├── stats.jsx           # Reading Analytics & Stats Practice Screen
-│       ├── goal.jsx            # Reading Goal Progress Practice Screen
-│       └── profile.jsx         # User Profile & Sign Out Screen
+│       └── goal.jsx            # Reading Goal Progress Practice Screen
 ├── components/                 # Custom Themed Components & UI Helpers
 ├── constants/                  # Color Schemes (Light & Dark)
 ├── context/                    # React Context (AuthContext & BooksContext)
 ├── docs/                       # Technical Documentation & Schemas
 ├── lib/                        # Appwrite Client Configuration
+├── notes/                      # Personal Learning Log (Modules 01-04)
 ├── assets/                     # Application Media & Vector Fonts
-├── .agent-state.md             # Task Progress Tracking State
-├── React_Native_Complete_Notes.md # Complete Course Lesson Summaries
 └── README.md                   # Repository Documentation
 ```
+
+---
+
+## 💡 What I Learned
+
+### 📱 Expo SDK & Core Native Primitives
+- **Cross-Platform Compilation**: Mastered Expo SDK 57 and Metro bundler toolchain to build unified iOS and Android bundles from a single JavaScript codebase.
+- **Native Layout Primitives**: Replaced web DOM elements with React Native primitives (`View`, `Text`, `Image`, `StyleSheet`), adhering to native Flexbox default column behavior and unitless density-independent sizing.
+- **Virtualized Performance**: Utilized `<FlatList>` with `keyExtractor` and `renderItem` memoization to render large book lists efficiently without off-screen DOM overhead.
+- **Safe Area Inset Handling**: Implemented `react-native-safe-area-context` to dynamically compute notch cutouts, home bars, and dynamic status bar heights across Android and iOS devices.
+- **Scalable Vector Icons**: Integrated `@expo/vector-icons` (`Ionicons`) to render resolution-independent iconography with custom color mapping for active/inactive navigation states.
+
+### 🎨 Styling, Dynamic Theming & Navigation
+- **Runtime Theme Switching**: Built system color scheme detection using React Native's `useColorScheme()` hook, automatically toggling between custom light and dark color tokens (`constants/Colors.js`).
+- **Encapsulated Themed Components**: Created reusable atomic UI wrappers (`ThemedView`, `ThemedText`, `ThemedButton`, `ThemedTextInput`) to centralize design system typography, border radii, and background styles.
+- **File-Based Routing Architecture**: Structured navigation routes declaratively with Expo Router using directory file conventions (`app/index.jsx`, `app/about.jsx`).
+- **Route Group Scoping**: Organized routes into parenthetical folders `(auth)`, `(dashboard)`, and `(practice)` to encapsulate navigation layouts without cluttering URL path segments.
+- **Dynamic Parameter Routes**: Built parameter-driven screen paths (`app/(dashboard)/books/[id].jsx`) using `useLocalSearchParams()` to retrieve dynamic document IDs.
+
+### 🔐 Authentication & Session Security
+- **Appwrite Client Initialization**: Configured `react-native-appwrite` SDK Client with custom API endpoints, project IDs, and `react-native-url-polyfill` for native URL support.
+- **User Session Lifecycle**: Implemented email/password user registration (`account.create`), authentication (`account.createEmailPasswordSession`), and session destruction (`account.deleteSession`).
+- **Persistent Session Auto-Login**: Integrated `account.get()` on app startup within `AuthContext` to seamlessly verify existing sessions and bypass login screens.
+- **Declarative Navigation Guards**: Built route protection logic in `app/_layout.jsx` using `useSegments()` and `useRouter()` to automatically redirect unauthenticated users away from protected screens.
+- **Validation & Inline Feedback**: Built real-time form validation state with custom warning banner components for immediate user feedback on authentication errors.
+
+### ⚡ NoSQL Database, Realtime Sync & Analytics
+- **Database Schema Modeling**: Designed Appwrite NoSQL collection schemas with explicit attribute types (`title`, `author`, `rating`, `userId`) and role-based permissions.
+- **Scoped User Document Queries**: Enforced data privacy by querying documents with `Query.equal('userId', user.$id)`, ensuring users only retrieve their own library documents.
+- **WebSocket Realtime Synchronization**: Subscribed to database event channels (`client.subscribe`) to achieve live WebSocket updates across multi-device sessions without polling.
+- **State Deduplication**: Implemented state array deduplication checks in WebSocket event handlers to prevent duplicate document rendering during optimistic updates.
+- **Data Computation & Visualization**: Designed analytical summary screens computing library metrics, average star ratings, distribution bar charts, and annual goal steppers.
 
 ---
 
